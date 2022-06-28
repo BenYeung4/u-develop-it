@@ -13,7 +13,7 @@ mysql> CREATE DATABASE election;
 
 /
 
-below is the term that will be used for the database:
+below is the term that will be used for the database (also selecting the database taht we would want"USE (whatever name we entered)"):
 USE election;
 
 /
@@ -96,3 +96,46 @@ WHERE id = 3;
 if we need to remove/delete:
 DELETE FROM candidates
 WHERE first_name = "Montague";
+
+/
+
+to quit SQL just type:
+quit
+
+////////////////////
+
+rechecking if everything is in SQL :
+SHOW DATABASES;
+
+/
+
+checks if the tables are set up correctly:
+SHOW TABLES;
+
+if the table is missing something, best to reset it for example, do the following in SQL also below is after we have manually entered everything into the individual databased sql file rather than entered in the terminal:
+mysql>source db/db.sql; ----this will throw away the old database and source it from the original/the one we want
+mysql>SHOW DATABASES; -----check that the election database was created
+mysql>source db/schema.sql; ------ creates the table for candidates
+mysql>SHOW TABLES; ----check that the candidates table was created correctly
+mysql>source db/seeds.sql; ----seed the candidates table(assuming adding the content)
+mysql>SELECT\* FROM candidates; generate and show database
+
+//////////////////////
+
+initialize NODE.js:
+npm init --y
+
+/
+
+installed npm express package and mysql2(allow us to connect to the MYSQL database and execute the SQL commands):
+npm install express mysql2
+
+/
+
+install and set up testing JEST:
+npm install jest --save-dev
+
+/
+
+create server.js
+touch server.js

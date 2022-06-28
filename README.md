@@ -120,6 +120,37 @@ mysql>SHOW TABLES; ----check that the candidates table was created correctly
 mysql>source db/seeds.sql; ----seed the candidates table(assuming adding the content)
 mysql>SELECT\* FROM candidates; generate and show database
 
+/
+if update the seeds.sql do the following
+source db/schema.sql
+source db/seeds.sql
+then confirm
+SELECT \* FROM candidates;
+
+deleting a specific set of party
+DELETE FROM parties WHERE id = 1;
+SELECT \* FROM candidates;
+deletes all party_id that is 1
+
+/
+
+adding the extra description
+SELECT \* FROM candidates
+LEFT JOIN parties ON candidates.party_id = parties.id;
+
+/
+
+reduces the size
+SELECT candidates.\*, parties.name
+FROM candidates
+LEFT JOIN parties ON candidates.party_id = parties.id;
+
+/
+renaming the data row:
+SELECT candidates.\*, parties.name AS party_name
+FROM candidates
+LEFT JOIN parties ON candidates.party_id = parties.id;
+
 //////////////////////
 
 initialize NODE.js:

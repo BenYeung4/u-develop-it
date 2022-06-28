@@ -1,6 +1,9 @@
 //npm install express
 const express = require("express");
 
+//MySQL database
+const mysql = require("mysql2");
+
 //add the ports for the server
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -20,6 +23,19 @@ app.use(express.json());
 app.use((req, res) => {
   res.status(404).end();
 });
+
+//code that connects the application to MySQL database
+const db = mysql.createConnection(
+  {
+    host: "localhost",
+    //Your MySQL username for now it is root,
+    user: "root",
+    //Your MySQL password
+    password: "Comefindme2!",
+    database: "election",
+  },
+  console.log("Connected to the election database.")
+);
 
 //function that will start the Express.js server on port 3001, always at the bottom
 app.listen(PORT, () => {

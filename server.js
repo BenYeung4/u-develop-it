@@ -35,8 +35,12 @@ const db = mysql.createConnection(
 
 //returning all candidates but its wrapped in an Express.js route
 app.get("/api/candidates", (req, res) => {
-  const sql = `SELECT * FROM candidates`;
-
+  //   const sql = `SELECT * FROM candidates`;
+  const sql = `SELECT candidates.*, parties.name 
+             AS party_name 
+             FROM candidates 
+             LEFT JOIN parties 
+             ON candidates.party_id = parties.id`;
   db.query(sql, (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -59,7 +63,13 @@ app.get("/api/candidates", (req, res) => {
 
 //getting single candidate in express.js route
 app.get("/api/candidate/:id", (req, res) => {
-  const sql = `SELECT * FROM candidates WHERE id = ?`;
+  //   const sql = `SELECT * FROM candidates WHERE id = ?`;
+  const sql = `SELECT candidates.*, parties.name 
+  AS party_name 
+  FROM candidates 
+  LEFT JOIN parties 
+  ON candidates.party_id = parties.id 
+  WHERE candidates.id = ?`;
   const params = [req.params.id];
 
   db.query(sql, params, (err, row) => {

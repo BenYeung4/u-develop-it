@@ -8,14 +8,12 @@ const mysql = require("mysql2");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+//import the module in order for us to add more candidates, this is used hand to hand with the inputCheck express function below
+const inputCheck = require("./utils/inputCheck");
+
 //express.js middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-//Default response for any other request(Not Found), meaning not supported by the app
-app.use((req, res) => {
-  res.status(404).end();
-});
 
 //code that connects the application to MySQL database
 const db = mysql.createConnection(
@@ -35,6 +33,22 @@ const db = mysql.createConnection(
 //   console.log(rows);
 // });
 
+//returning all candidates but its wrapped in an Express.js route
+app.get("/api/candidates", (req, res) => {
+  const sql = `SELECT * FROM candidates`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
 //return single candidate from the candidates table based on their id, we hard coded id = 1
 // db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
 //   if (err) {
@@ -43,6 +57,23 @@ const db = mysql.createConnection(
 //   console.log(row);
 // });
 
+//getting single candidate in express.js route
+app.get("/api/candidate/:id", (req, res) => {
+  const sql = `SELECT * FROM candidates WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
 //delete a candidate, ? is a place holder, for preparing, but we hardcoded 1 so it will delete id =1
 // db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
 //   if (err) {
@@ -50,6 +81,28 @@ const db = mysql.createConnection(
 //   }
 //   console.log(result);
 // });
+
+// Delete a candidate with express.js route, can use insomnia to review this function
+app.delete("/api/candidate/:id", (req, res) => {
+  const sql = `DELETE FROM candidates WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Candidate not found",
+      });
+    } else {
+      res.json({
+        message: "sucessfully deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
 
 //create/add a candidate
 // const sql = `INSERT INTO candidates (id, first_name, last_name, industry_connected) VALUES(?,?,?,?)`;
@@ -61,6 +114,39 @@ const db = mysql.createConnection(
 //   }
 //   console.log(result);
 // });
+
+// Create a candidate with the express
+app.post("/api/candidate", ({ body }, res) => {
+  const errors = inputCheck(
+    body,
+    "first_name",
+    "last_name",
+    "industry_connected"
+  );
+  if (errors) {
+    res.status(400).json({ error: errors });
+    return;
+  }
+  const sql = `INSERT INTO candidates (first_name, last_name, industry_connected)
+  VALUES (?,?,?)`;
+  const params = [body.first_name, body.last_name, body.industry_connected];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: body,
+    });
+  });
+});
+
+//Default response for any other request(Not Found), meaning not supported by the app, always make sure this is at the end
+app.use((req, res) => {
+  res.status(404).end();
+});
 
 //function that will start the Express.js server on port 3001, always at the bottom
 app.listen(PORT, () => {

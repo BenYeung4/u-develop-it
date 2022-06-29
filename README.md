@@ -18,7 +18,7 @@ USE election;
 
 /
 
-Creates a candidate table in sql terminal:
+Creates a candidate table in sql terminal VARCHAR(whatever number in here is the amount of characters there is suppose to be):
 CREATE TABLE candidates (
 id INTEGER AUTO_INCREMENT PRIMARY KEY,
 first_name VARCHAR(30) NOT NULL,

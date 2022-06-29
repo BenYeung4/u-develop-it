@@ -10,4 +10,7 @@ router.use(require("./partyRoutes"));
 //retrieves the voter routes
 router.use(require("./voterRoutes"));
 
+//retrieving and using the vote route
+router.use(require("./voteRoutes"));
+
 module.exports = router;

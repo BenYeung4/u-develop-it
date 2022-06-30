@@ -151,6 +151,48 @@ SELECT candidates.\*, parties.name AS party_name
 FROM candidates
 LEFT JOIN parties ON candidates.party_id = parties.id;
 
+/
+when writing the votes for the voters:
+addes the votes:
+INSERT INTO votes (voter_id, candidate_id)
+VALUES(3,1), (4,2), (5,2), (6,2), (7,2), (8,3), (9,3);
+
+display the number of votes:
+SELECT COUNT(candidate_id) FROM votes;
+
+display the votes for candidates but only the number, not the catagory
+SELECT COUNT(candidate_id) FROM votes GROUP BY candidate_id;
+
+adds catagories to view the votes for
+SELECT candidates.\*, parties.name AS party_name, COUNT(candidate_id)
+FROM votes
+LEFT JOIN candidates ON votes.candidate_id = candidates.id
+LEFT JOIN parties ON candidates.party_id = parties.id
+GROUP BY candidate_id;
++------+------------+-----------+----------+--------------------+----------------+---------------------+
+| id | first_name | last_name | party_id | industry_connected | party_name | COUNT(candidate_id) |  
++------+------------+-----------+----------+--------------------+----------------+---------------------+  
+| 1 | Ronald | Firbank | 1 | 1 | JS Juggernauts | 2 |  
+| 2 | Virginia | Woolf | 1 | 1 | JS Juggernauts | 4 |  
+| 3 | Piers | Gaveston | 1 | 0 | JS Juggernauts | 2 |  
+| 5 | Katherine | Mansfield | 2 | 1 | Heroes of HTML | 1 |
++------+------------+-----------+----------+--------------------+----------------+---------------------+
+
+renames the count column from count(candidate_id) to count, reformat the table by ORDER in desending:
+SELECT candidates.\*, parties.name AS party_name, COUNT(candidate_id) AS count
+FROM votes
+LEFT JOIN candidates ON votes.candidate_id = candidates.id
+LEFT JOIN parties ON candidates.party_id = parties.id
+GROUP BY candidate_id ORDER BY count DESC;
++------+------------+-----------+----------+--------------------+----------------+-------+
+| id | first_name | last_name | party_id | industry_connected | party_name | count |
++------+------------+-----------+----------+--------------------+----------------+-------+
+| 2 | Virginia | Woolf | 1 | 1 | JS Juggernauts | 4 |
+| 1 | Ronald | Firbank | 1 | 1 | JS Juggernauts | 2 |
+| 3 | Piers | Gaveston | 1 | 0 | JS Juggernauts | 2 |
+| 5 | Katherine | Mansfield | 2 | 1 | Heroes of HTML | 1 |
++------+------------+-----------+----------+--------------------+----------------+-------+
+
 //////////////////////
 
 initialize NODE.js:
